@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:getx_with_firebase/view/components/loading_widget.dart';
+import 'package:getx_with_firebase/view/source/auth_screens/signin_screen.dart';
+import '../../../data/services/controller/auth_controller.dart';
 import '../../components/custom_textformfield.dart';
-import '../../components/custom_button.dart'; // Naya import
+import '../../components/custom_button.dart';
 
 class SignupScreen extends StatelessWidget {
   SignupScreen({super.key});
@@ -8,6 +12,8 @@ class SignupScreen extends StatelessWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
+  final AuthController authController = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +34,7 @@ class SignupScreen extends StatelessWidget {
                   if (value == null || value.isEmpty) return "Email is required";
                   if (!value.contains('@')) return "Enter a valid email";
                   return null;
+                  //"Email is required"
                 },
               ),
 
@@ -44,16 +51,36 @@ class SignupScreen extends StatelessWidget {
 
               const SizedBox(height: 30), // Gap dene ke liye
 
-              // --- Custom Button Yahan Hai ---
-              CustomButton(
-                text: "Create Account",
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    // Logic for signup
-                    print("Email: ${emailController.text}");
-                  }
+              // --- Obx yahan se copy karein ---
+              Obx(() {
+                if (authController.isLoading.value) {
+                  return const Center(child:
+                  LoadingWidget());
+                } else {
+                  return CustomButton(
+                    text: "Create Account",
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                      //   authController.signUp(
+                      //     // emailController.text.trim(),
+                      //     // passwordController.text.trim(),
+                      //   );
+                       }
+                    },
+                  );
+                }
+              }),
+              const SizedBox(height: 30),
+
+              Row(children: [
+                Text('Already have an account?  ',style:
+                TextStyle(color: Colors.black,fontSize: 18),),
+                TextButton(onPressed: (){
+                  Get.offAll(()=>SigninScreen());
                 },
-              ),
+                    child: Text('signin',style:
+                      TextStyle(color: Colors.red,fontSize: 15),))
+              ],)
             ],
           ),
         ),
