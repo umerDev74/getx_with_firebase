@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getx_with_firebase/utills/routes/route_class.dart';
 import 'package:getx_with_firebase/view/components/loading_widget.dart';
 import 'package:getx_with_firebase/view/source/auth_screens/signin_screen.dart';
 import '../../../data/services/controller/auth_controller.dart';
@@ -9,11 +10,11 @@ import '../../components/custom_button.dart';
 class SignupScreen extends StatelessWidget {
   SignupScreen({super.key});
 
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  // final emailController = TextEditingController();
+  // final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class SignupScreen extends StatelessWidget {
           child: Column(
             children: [
               CustomTextFormField(
-                controller: emailController,
+                controller: authController.emailController,
                 hintText: "Enter Email",
                 prefixIcon: Icons.email,
                 keyboardType: TextInputType.emailAddress,
@@ -39,7 +40,7 @@ class SignupScreen extends StatelessWidget {
               ),
 
               CustomTextFormField(
-                controller: passwordController,
+                controller: authController.passwordController,
                 hintText: "Enter Password",
                 prefixIcon: Icons.lock,
                 obscureText: true,
@@ -61,10 +62,7 @@ class SignupScreen extends StatelessWidget {
                     text: "Create Account",
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
-                      //   authController.signUp(
-                      //     // emailController.text.trim(),
-                      //     // passwordController.text.trim(),
-                      //   );
+                      authController.signUp();
                        }
                     },
                   );
@@ -76,7 +74,7 @@ class SignupScreen extends StatelessWidget {
                 Text('Already have an account?  ',style:
                 TextStyle(color: Colors.black,fontSize: 18),),
                 TextButton(onPressed: (){
-                  Get.offAll(()=>SigninScreen());
+                  Get.offNamed(AppRoutes.signinscreen);
                 },
                     child: Text('signin',style:
                       TextStyle(color: Colors.red,fontSize: 15),))

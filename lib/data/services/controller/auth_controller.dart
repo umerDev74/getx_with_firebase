@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_with_firebase/utills/error_messages/snackbars.dart';
+import 'package:getx_with_firebase/utills/routes/route_class.dart';
 // Apne path ke mutabiq change karein
 import '../../../utills/exceptions/auth_exceptions.dart';
-import '../../../view/source/home_screens/home_screen.dart';
 import '../firebase/firebase_auth/auth_services.dart';
 //import 'auth_service.dart'; // AuthService ko import karein
 
@@ -19,7 +19,7 @@ class AuthController extends GetxController {
   var isLoading = false.obs;
 
   // --- SIGN UP ---
-  Future<void> signUp(String trim) async {
+  Future<void> signUp() async {
     try {
       isLoading.value = true;
 
@@ -29,7 +29,8 @@ class AuthController extends GetxController {
       );
 
       AppSnackbar.ShowSuccessSnackbar("Success", "Account created successfully");
-      Get.offAll(() => const HomeScreen());
+      Get.offAllNamed(AppRoutes.homescreen);
+      //Get.offAll(() => const HomeScreen());
 
     } catch (e) {
       String errorMsg = FirebaseExceptionHandler.getErrorMessage(e);
@@ -40,7 +41,7 @@ class AuthController extends GetxController {
   }
 
   // --- SIGN IN ---
-  Future<void> signIn(String trim,) async {
+  Future<void> signIn() async {
     try {
       isLoading.value = true;
 
@@ -50,7 +51,8 @@ class AuthController extends GetxController {
       );
 
       AppSnackbar.ShowSuccessSnackbar('Welcome Back', 'Login Successfully');
-      Get.offAll(() => const HomeScreen());
+      //Get.offAll(() => const HomeScreen());
+      Get.offAllNamed(AppRoutes.homescreen);
 
     } catch (e) {
       String errorMsg = FirebaseExceptionHandler.getErrorMessage(e);
@@ -74,8 +76,10 @@ class AuthController extends GetxController {
 
   @override
   void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
+    emailController.clear();
+    passwordController.clear();
+    // emailController.dispose();
+    // passwordController.dispose();
     super.onClose();
   }
 }

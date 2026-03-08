@@ -8,8 +8,8 @@ import '../../components/custom_button.dart'; // Naya import
 class SigninScreen extends StatelessWidget {
   SigninScreen({super.key});
 
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  // final emailController = TextEditingController();
+  // final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   final AuthController authController = Get.put(AuthController());
@@ -25,7 +25,7 @@ class SigninScreen extends StatelessWidget {
           child: Column(
             children: [
               CustomTextFormField(
-                controller: emailController,
+                controller: authController.emailController,
                 hintText: "Enter Email",
                 prefixIcon: Icons.email,
                 keyboardType: TextInputType.emailAddress,
@@ -37,7 +37,7 @@ class SigninScreen extends StatelessWidget {
               ),
 
               CustomTextFormField(
-                controller: passwordController,
+                controller: authController.passwordController,
                 hintText: "Enter Password",
                 prefixIcon: Icons.lock,
                 obscureText: true,
@@ -57,9 +57,7 @@ class SigninScreen extends StatelessWidget {
                   text: "Login Account",
                   onPressed: () {
                    if (formKey.currentState!.validate()) {
-                     // authController.signIn(
-                     //   emailController.text.trim(),
-                     //  );
+                      authController.signIn();
                     }
                   },
                 );
