@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_with_firebase/utills/routes/route_class.dart';
 import 'package:getx_with_firebase/view/components/loading_widget.dart';
-import 'package:getx_with_firebase/view/source/auth_screens/signin_screen.dart';
 import '../../../data/services/controller/auth_controller.dart';
 import '../../components/custom_textformfield.dart';
 import '../../components/custom_button.dart';
