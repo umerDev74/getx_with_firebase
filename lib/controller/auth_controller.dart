@@ -1,67 +1,86 @@
+// auth controller with models
+// ... other imports
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getx_with_firebase/utills/error_messages/snackbars.dart';
-import 'package:getx_with_firebase/utills/routes/route_class.dart';
-// Apne path ke mutabiq change karein
-import '../../../utills/exceptions/auth_exceptions.dart';
-import '../firebase/firebase_auth/auth_services.dart';
-//import 'auth_service.dart'; // AuthService ko import karein
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+
+import '../data/services/firebase/firebase_auth/auth_services.dart';
+import '../model/auth_model/user_model.dart';
+import '../utills/error_messages/snackbars.dart';
+import '../utills/exceptions/auth_exceptions.dart';
+import '../utills/routes/route_class.dart';
 
 class AuthController extends GetxController {
-  // Dependency Injection
   final AuthService _authService = AuthService();
 
-  // Text Controllers
+  // Observable User Model
+  var userModel = Rxn<UserModel>();
+  var isLoading = false.obs;
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  // Observable state
-  var isLoading = false.obs;
-
-  // --- SIGN UP ---
   Future<void> signUp() async {
     try {
       isLoading.value = true;
-
-      await _authService.signUp(
+      // Capture the returned model
+      userModel.value = await _authService.signUp(
           emailController.text.trim(),
           passwordController.text.trim()
       );
 
-      AppSnackbar.ShowSuccessSnackbar("Success", "Account created successfully");
+      AppSnackbar.ShowSuccessSnackbar("Success", "Account created for ${userModel.value?.email}");
       Get.offAllNamed(AppRoutes.homescreen);
-      //Get.offAll(() => const HomeScreen());
-
     } catch (e) {
-      String errorMsg = FirebaseExceptionHandler.getErrorMessage(e);
-      _showErrorSnackbar(errorMsg);
+      _showErrorSnackbar(FirebaseExceptionHandler.getErrorMessage(e));
     } finally {
       isLoading.value = false;
     }
   }
 
-  // --- SIGN IN ---
   Future<void> signIn() async {
     try {
       isLoading.value = true;
-
-      await _authService.signIn(
+      // Capture the returned model
+      userModel.value = await _authService.signIn(
           emailController.text.trim(),
           passwordController.text.trim()
       );
 
-      AppSnackbar.ShowSuccessSnackbar('Welcome Back', 'Login Successfully');
-      //Get.offAll(() => const HomeScreen());
+      AppSnackbar.ShowSuccessSnackbar('Welcome Back', 'Logged in as ${userModel.value?.email}');
       Get.offAllNamed(AppRoutes.homescreen);
-
     } catch (e) {
-      String errorMsg = FirebaseExceptionHandler.getErrorMessage(e);
-      _showErrorSnackbar(errorMsg);
+      _showErrorSnackbar(FirebaseExceptionHandler.getErrorMessage(e));
     } finally {
       isLoading.value = false;
     }
   }
 
+  // --- SIGN OUT (Naya Function) ---
+  Future<void> signOut() async {
+    try {
+      isLoading.value = true;
+      await _authService.signOut(); // Firebase se logout
+      userModel.value = null;      // Local state clear
+
+      // Text fields bhi clear kar dein taake naya banda login kar sake
+      emailController.clear();
+      passwordController.clear();
+
+      Get.offAllNamed(AppRoutes.signupscreen); // Wapis Login par bhejein
+      AppSnackbar.ShowSuccessSnackbar('Signed Out', 'Logout Successfully');
+    } catch (e) {
+      _showErrorSnackbar("Logout Failed: ${e.toString()}");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // --- ISKO YAHAN RAKHEN (Inside the class) ---
   void _showErrorSnackbar(String message) {
     Get.snackbar(
       "Authentication Error",
@@ -73,16 +92,18 @@ class AuthController extends GetxController {
       icon: const Icon(Icons.warning_amber_rounded, color: Colors.red),
     );
   }
-
   @override
   void onClose() {
+    // Controllers ko dispose karna zaroori hai memory leaks se bachne ke liye
     emailController.clear();
     passwordController.clear();
     // emailController.dispose();
     // passwordController.dispose();
     super.onClose();
   }
+// ... rest of your controller code
 }
+
 
 
 

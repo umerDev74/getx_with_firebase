@@ -5,7 +5,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:getx_with_firebase/utills/routes/route_class.dart';
 //import 'package:getx_with_firebase/view/source/auth_screens/signup_screen.dart';
 
-import 'data/services/controller/auth_controller.dart';
+import 'controller/auth_controller.dart';
 import 'firebase_options.dart';
 
 void main()
@@ -14,7 +14,8 @@ async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Get.lazyPut(() => AuthController(), fenix: true); // fenix: true isse dobara create hone deta hai
+  //Get.lazyPut(() => AuthController(), fenix: true); // fenix: true isse dobara create hone deta hai
+  Get.put(AuthController(), permanent: true);
   runApp(const MyApp());
 }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_with_firebase/view/components/loading_widget.dart';
-import '../../../data/services/controller/auth_controller.dart';
+import '../../../controller/auth_controller.dart';
 import '../../components/custom_textformfield.dart';
 import '../../components/custom_button.dart'; // Naya import
 
